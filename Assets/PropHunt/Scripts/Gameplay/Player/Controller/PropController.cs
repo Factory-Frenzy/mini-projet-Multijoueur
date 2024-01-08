@@ -29,6 +29,8 @@ public class PropController : ClassController
     protected int _playerLayer;
     protected Prop focusedProp;
     AsyncOperationHandle<GameObject> _loadPropHandle;
+    
+    private NetworkVariable<FixedString64Bytes> _currentMorphName = new();
 
     #region Unity event functions
     protected override void Awake()
@@ -50,9 +52,23 @@ public class PropController : ClassController
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            _currentMorphName.Value = _baseAddressableName;
+        }
         _targetPropText = _camera.GetComponentInChildren<TMP_Text>();
+        _currentMorphName.OnValueChanged += MorphPropCallback;
+        
+        if (IsClient && !IsOwner && _currentMorphName.Value != _baseAddressableName)
+        { 
+            StartCoroutine(LoadPropCoroutine(_currentMorphName.Value.ToString()));
+        }
     }
-
+    
+    private void MorphPropCallback(FixedString64Bytes prevPropName, FixedString64Bytes newPropName)
+    {
+        StartCoroutine(LoadPropCoroutine(newPropName.ToString()));
+    }
 
     void FixedUpdate()
     {
@@ -89,7 +105,7 @@ public class PropController : ClassController
     {
         if (focusedProp == null) return;
 
-        StartCoroutine(LoadPropCoroutine(focusedProp.PropName));
+        _currentMorphName.Value = focusedProp.PropName;
     }
 
     public void CancelMorph()
