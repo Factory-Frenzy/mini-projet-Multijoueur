@@ -28,6 +28,30 @@ namespace PropHunt.UI
             m_ipAddress = m_RootMenu.Query<TextField>("IpField");
             m_port = m_RootMenu.Query<IntegerField>("PortField");
         }
+        
+        private void Start()
+        {
+            m_clientButton.clicked += StartClient;
+            m_hostButton.clicked += StartHost;
+        }
+        
+        void StartHost()
+        {
+            SetUtpConnectionData();
+            var result = NetworkManager.Singleton.StartHost();
+
+            if (result)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }
+        }
+        
+        void StartClient()
+        {
+            SetUtpConnectionData();
+            NetworkManager.Singleton.StartClient();
+        }
+        
         /// <summary>
         /// Use sanitized IP and Port to set up the connection.
         /// </summary>
