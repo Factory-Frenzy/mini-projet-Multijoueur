@@ -134,6 +134,7 @@ public class PropController : ClassController
     {
         Destroy(Body);
         Body = Instantiate(propModel.BodyGameObject, transform);
+        Body.GetComponent<NetworkObject>().Spawn();
         _rigidbody.mass = propModel.Rigidbody.mass;
         var newPosY = transform.position.y + 0.15f;
         transform.parent.position = new Vector3(transform.position.x, newPosY, transform.position.z);
