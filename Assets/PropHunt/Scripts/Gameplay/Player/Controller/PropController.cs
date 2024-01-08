@@ -15,6 +15,7 @@ public class PropController : ClassController
     [SerializeField] protected string _baseAddressableName = "PlayerProp";
     [SerializeField] protected string _playerLayerName = "Player";
     [SerializeField] private TMP_Text _targetPropText;
+    [SerializeField] private Prop _propDefault;
 
     public float DistanceFromCenter;
 
@@ -27,7 +28,7 @@ public class PropController : ClassController
     [SerializeField] protected AudioSource _audioSource;
 
     protected int _playerLayer;
-    protected Prop focusedProp;
+    protected Prop focusedProp = null;
     AsyncOperationHandle<GameObject> _loadPropHandle;
 
     #region Unity event functions
@@ -94,7 +95,10 @@ public class PropController : ClassController
 
     public void CancelMorph()
     {
-
+        if (Body.name != "PropBody")
+        {
+            ApplyProp(_propDefault);
+        }
     }
 
     public void Taunt()
