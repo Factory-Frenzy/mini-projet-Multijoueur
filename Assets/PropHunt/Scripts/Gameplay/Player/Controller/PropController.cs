@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Random = UnityEngine.Random;
 
 public class PropController : ClassController
 {
@@ -31,6 +34,11 @@ public class PropController : ClassController
     AsyncOperationHandle<GameObject> _loadPropHandle;
     
     private NetworkVariable<FixedString64Bytes> _currentMorphName = new();
+    
+    [SerializeField] protected float _tauntCooldownTime = 2.0f;
+    private float _nextTauntAvailableTime;
+    private bool _isTauntAvailable = true;
+    private ClientRpcParams _clientRpcParams;
 
     #region Unity event functions
     protected override void Awake()
@@ -63,6 +71,14 @@ public class PropController : ClassController
         { 
             StartCoroutine(LoadPropCoroutine(_currentMorphName.Value.ToString()));
         }
+        
+        _clientRpcParams = new()
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { OwnerClientId }
+            }
+        };
     }
     
     private void MorphPropCallback(FixedString64Bytes prevPropName, FixedString64Bytes newPropName)
@@ -104,19 +120,19 @@ public class PropController : ClassController
     public void MorphProp()
     {
         if (focusedProp == null) return;
-
-        _currentMorphName.Value = focusedProp.PropName;
+        ChangeCurrentPropServerRPC(focusedProp.PropName);
     }
 
     public void CancelMorph()
-    {
-
+    { 
+        ChangeCurrentPropServerRPC(_baseAddressableName); 
+        ResetAnimator();
     }
 
     public void Taunt()
     {
         var tauntNumber = Random.Range(0, TauntList.Length);
-        PlayTaunt(tauntNumber);
+        SendTauntServerRpc(tauntNumber);
     }
     #endregion
 
@@ -250,4 +266,60 @@ public class PropController : ClassController
         focusedProp = null;
     }
     #endregion
+    
+    [ServerRpc]
+    private void ChangeCurrentPropServerRPC(string propName)
+    {
+        _currentMorphName.Value = propName;
+    }
+    
+    /// <summary>
+    /// Send all clients
+    /// </summary>
+    /// <param name="tauntNumber"></param>
+    [ServerRpc]
+    public void SendTauntServerRpc(int tauntNumber)
+    {
+        if (_isTauntAvailable)
+        {
+            SendTauntClientRpc(tauntNumber);
+            _nextTauntAvailableTime = Time.time + _tauntCooldownTime;
+            _isTauntAvailable = false;
+        }
+    }
+
+    [ClientRpc]
+    private void SendTauntClientRpc(int tauntNumber)
+    {
+        if (IsOwner)
+        {
+            _nextTauntAvailableTime = Time.time + _tauntCooldownTime;
+            _isTauntAvailable = false;
+        }
+        PlayTaunt(tauntNumber);
+    }
+
+    private void CheckForTauntServer()
+    {
+        if (IsServer && Time.time >= _nextTauntAvailableTime)
+        {
+            _isTauntAvailable = true;
+            AllowTauntClientRpc(_clientRpcParams);
+        }
+    }
+
+    [ClientRpc]
+    private void AllowTauntClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+        _isTauntAvailable = true;
+    }
+    
+    private void Update()
+    {
+        CheckForTauntServer();
+    }
 }
