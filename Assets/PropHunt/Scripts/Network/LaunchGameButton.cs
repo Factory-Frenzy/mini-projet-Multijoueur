@@ -8,10 +8,11 @@ public class LaunchGameButton : MonoBehaviour
 
     private void Start()
     {
-        if (!NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsHost)
         {
             Button btn = GetComponent<Button>();
-            btn.enabled = false;
+           // btn.enabled = false;
+            btn.gameObject.SetActive(false);
         }
     }
 

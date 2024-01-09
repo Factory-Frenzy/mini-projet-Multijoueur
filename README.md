@@ -22,7 +22,7 @@ FP2:
 - [ ] FP2 – 1 : Les joueurs sont capables de changer d’équipe entre Props et Hunters.
 - [ ] FP2 – 2 : Les Hunters sont aveugles pendant les dix premières secondes de jeu
 - [ ] FP2 – 3 : Les Hunters peuvent tirer des projectiles.
-- [ ] FP2 – 3 : Les Hunters peuvent tirer des projectiles.
+- [ ] FP2 – 4 : Les Hunters et Props ont des points de vie et sont éliminés quand leurs points de vie tombent à 0.
 - [ ] FP2 – 5 : Les Hunters perdent de la vie lorsqu’ils touchent autre chose qu’un Props et les Props perdent de la vie lorsque touchés par un projectile de Hunter.
 - [ ] FP2 – 6 : Une équipe gagne lorsque tous les membres de l’équipe adverse sont éliminés.
 - [ ] FP2 – 7 : Fin de partie au bout de 3 minutes.
