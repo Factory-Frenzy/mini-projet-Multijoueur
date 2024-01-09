@@ -20,21 +20,20 @@ public class HunterController : ClassController
 
     public void Shoot()
     {
-        print("new sphere");
-        // Calculate the position in front of the parent object
-        Vector3 positionInFront = transform.position + transform.forward;
+        // rajouter le blocage dans la scene Lobby
 
-        // Instantiate the sphere at the calculated position and with the same rotation as the parent
-        // GameObject spawnedSphere = Instantiate(Sphere, positionInFront, transform.rotation);
+        Vector3 positionInFront = transform.position + transform.forward;
         ShootOnlineServerRpc(positionInFront, transform.rotation);
     }
 
     [ServerRpc]
-    private void ShootOnlineServerRpc(Vector3 positionInFront, Quaternion rotation)
+    private void ShootOnlineServerRpc(Vector3 positionInFront, Quaternion rotation, ServerRpcParams serverRpcParams = default)
     {
         GameObject spawnedSphere = Instantiate(Sphere, positionInFront, rotation);
         spawnedSphere.GetComponent<NetworkObject>().Spawn();
         spawnedSphere.GetComponent<Rigidbody>().isKinematic = false;
         spawnedSphere.GetComponent<Rigidbody>().AddForce(transform.forward * 1000 + Vector3.up * 50);
+        ShootController shootController = spawnedSphere.GetComponent<ShootController>();
+        shootController.ShootInfo = new ShootInfo() { SenderId = serverRpcParams.Receive.SenderClientId };
     }
 }
