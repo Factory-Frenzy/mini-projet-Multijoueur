@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.InputSystem.InputAction;
 
 public class ActionInput : MonoBehaviour
@@ -89,8 +91,11 @@ public class ActionInput : MonoBehaviour
     public void OnTeamSwap(CallbackContext context)
     {
         //TODO : Bloquer ça pendant le jeu
-        if (!context.performed) return;
-        _playerManager.SwapTeam();
+        if (SceneManager.GetActiveScene().name != "Game")
+        {
+            if (!context.performed) return;
+            _playerManager.SwapTeam();
+        }
     }
 
     public void OnCursorLockToggle(CallbackContext context)
