@@ -15,6 +15,7 @@ public class ActionInput : MonoBehaviour
 
     [Header("Properties")]
     [SerializeField] private PlayerManager _playerManager;
+
     private ClassInput _currentClassInput;
 
     private void Awake()
@@ -88,7 +89,7 @@ public class ActionInput : MonoBehaviour
 
     public void OnTeamSwap(CallbackContext context)
     {
-        //TODO : Bloquer ça pendant le jeu
+        if (GameManager.Instance.GetStatus() == GameEnum.IN_GAME) return;
         if (!context.performed) return;
         _playerManager.SwapTeam();
     }

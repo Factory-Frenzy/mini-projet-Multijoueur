@@ -11,6 +11,7 @@ using UnityEngine;
 public class ConnectionApprovalHandler : MonoBehaviour
 {
     private NetworkManager m_NetworkManager;
+    // public GameManager _gameManager;
     public int MaxNumberOfPlayers = 6;
     private int _numberOfPlayers = 0;
 
@@ -36,6 +37,14 @@ public class ConnectionApprovalHandler : MonoBehaviour
         bool isApproved = true;
         _numberOfPlayers++;
 
+        print("GameManager.Instance " + GameManager.Instance);
+        print("GameManager.Instance.GetStatus(), " + GameManager.Instance.GetStatus());
+        if (GameManager.Instance.GetStatus() != GameEnum.LOBBY)
+        {
+            isApproved = false;
+            response.Reason = "Party already started!";
+        }
+        
         if (_numberOfPlayers > MaxNumberOfPlayers)
         {
             isApproved = false;

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 public class LaunchGameButton : MonoBehaviour
 {
     private const string GameSceneName = "Game";
+    //[SerializeField] private GameManager _gameManager;
 
     private void Start()
     {
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsHost)
         {
             Button btn = GetComponent<Button>();
-           // btn.enabled = false;
             btn.gameObject.SetActive(false);
         }
     }
@@ -19,5 +19,6 @@ public class LaunchGameButton : MonoBehaviour
     public void LaunchGame()
     {
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        GameManager.Instance.StartGame();
     }
 }
