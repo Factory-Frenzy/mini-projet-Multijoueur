@@ -17,7 +17,7 @@ public class SpawnProps : MonoBehaviour
         }
 
         int nPropsToSpawn = Random.Range(minNumberOfProps, maxNumberOfProps);
-        System.Random rng = new System.Random();
+
         SpawnPoints.Shuffle();
 
         for (int i = 0; i < nPropsToSpawn; i++)
@@ -33,7 +33,7 @@ public class SpawnProps : MonoBehaviour
 
 static class MyExtensions
 {
-    private static System.Random rng = new();
+    private static System.Random rng = new System.Random();
 
     public static void Shuffle<T>(this IList<T> list)
     {
