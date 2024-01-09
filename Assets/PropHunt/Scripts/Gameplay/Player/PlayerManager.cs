@@ -33,6 +33,9 @@ public class PlayerManager : NetworkBehaviour
             _actionInput = GetComponent<ActionInput>();
         }
         if (Camera == null) Camera = GetComponentInChildren<Camera>(true);
+        
+        _propController.Deactivate();
+        _hunterController.Deactivate();
     }
     public override void OnNetworkSpawn()
     {
