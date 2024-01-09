@@ -134,6 +134,15 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""1da5af27-2d1a-42f5-8933-6b1547eb3b4b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -345,6 +354,17 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
                     ""action"": ""UnlockCursor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88111842-2699-46e2-bcfe-76477ef4e3ab"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -365,6 +385,7 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
         m_gameplay_SwapTeam = m_gameplay.FindAction("SwapTeam", throwIfNotFound: true);
         m_gameplay_TriggerMenu = m_gameplay.FindAction("TriggerMenu", throwIfNotFound: true);
         m_gameplay_UnlockCursor = m_gameplay.FindAction("UnlockCursor", throwIfNotFound: true);
+        m_gameplay_Shoot = m_gameplay.FindAction("Shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -438,6 +459,7 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_SwapTeam;
     private readonly InputAction m_gameplay_TriggerMenu;
     private readonly InputAction m_gameplay_UnlockCursor;
+    private readonly InputAction m_gameplay_Shoot;
     public struct GameplayActions
     {
         private @SimpleControls m_Wrapper;
@@ -454,6 +476,7 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
         public InputAction @SwapTeam => m_Wrapper.m_gameplay_SwapTeam;
         public InputAction @TriggerMenu => m_Wrapper.m_gameplay_TriggerMenu;
         public InputAction @UnlockCursor => m_Wrapper.m_gameplay_UnlockCursor;
+        public InputAction @Shoot => m_Wrapper.m_gameplay_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -499,6 +522,9 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
             @UnlockCursor.started += instance.OnUnlockCursor;
             @UnlockCursor.performed += instance.OnUnlockCursor;
             @UnlockCursor.canceled += instance.OnUnlockCursor;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -539,6 +565,9 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
             @UnlockCursor.started -= instance.OnUnlockCursor;
             @UnlockCursor.performed -= instance.OnUnlockCursor;
             @UnlockCursor.canceled -= instance.OnUnlockCursor;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -570,5 +599,6 @@ public partial class @SimpleControls: IInputActionCollection2, IDisposable
         void OnSwapTeam(InputAction.CallbackContext context);
         void OnTriggerMenu(InputAction.CallbackContext context);
         void OnUnlockCursor(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
 }

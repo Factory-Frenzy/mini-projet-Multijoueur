@@ -98,6 +98,12 @@ public class ActionInput : MonoBehaviour
         }
     }
 
+    public void OnShoot(CallbackContext context)
+    {
+        if (!context.performed) return;
+        _currentClassInput.Shoot();
+    }
+
     public void OnCursorLockToggle(CallbackContext context)
     {
         if (!context.performed) return;

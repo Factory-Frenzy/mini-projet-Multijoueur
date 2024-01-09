@@ -9,6 +9,7 @@ public class ClassInput : MonoBehaviour
     public UnityEvent OnAction2;
     public UnityEvent OnAction3;
     public UnityEvent OnCancel;
+    public UnityEvent OnShoot;
 
     public void Fire1()
     {
@@ -37,5 +38,10 @@ public class ClassInput : MonoBehaviour
     public void Cancel()
     {
         OnCancel?.Invoke();
+    }
+
+    public void Shoot()
+    {
+        OnShoot?.Invoke();
     }
 }
