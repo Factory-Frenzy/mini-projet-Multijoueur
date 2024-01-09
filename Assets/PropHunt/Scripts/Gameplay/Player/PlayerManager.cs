@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -44,8 +41,6 @@ public class PlayerManager : NetworkBehaviour
             _movementController.enabled = true;
             Camera.gameObject.SetActive(true);
             _movementController.SetAnimator(GetComponent<Animator>());
-            _propController.Deactivate();
-            _hunterController.Deactivate();
             SwapTeam();
             return;
         }
