@@ -11,6 +11,7 @@ public class SpawnProps : MonoBehaviour
 
     void Start()
     {
+        return;
         if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer)
         {
             return;
@@ -18,7 +19,9 @@ public class SpawnProps : MonoBehaviour
 
         int nPropsToSpawn = Random.Range(minNumberOfProps, maxNumberOfProps);
 
-        SpawnPoints.Shuffle();
+        //SpawnPoints.Shuffle();
+        
+        print("SpawnPoints: " + SpawnPoints);
 
         for (int i = 0; i < nPropsToSpawn; i++)
         {
