@@ -33,9 +33,6 @@ public class PlayerManager : NetworkBehaviour
             _actionInput = GetComponent<ActionInput>();
         }
         if (Camera == null) Camera = GetComponentInChildren<Camera>(true);
-        
-        _propController.Deactivate();
-        _hunterController.Deactivate();
     }
     public override void OnNetworkSpawn()
     {
@@ -47,6 +44,8 @@ public class PlayerManager : NetworkBehaviour
             _movementController.enabled = true;
             Camera.gameObject.SetActive(true);
             _movementController.SetAnimator(GetComponent<Animator>());
+            _propController.Deactivate();
+            _hunterController.Deactivate();
             SwapTeam();
             return;
         }
