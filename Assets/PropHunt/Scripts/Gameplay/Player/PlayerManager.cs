@@ -31,20 +31,12 @@ public class PlayerManager : NetworkBehaviour
         {
             lock (_lock)
             {
-                _life.Value = _life.Value + value;
-                //print("Life Hunter="+isHunter.Value+": "+_life.Value);
-                /*print(NetworkManager.Singleton.ConnectedClientsIds.Count);
-                print(NetworkManager.Singleton.IsHost);
-                print(NetworkManager.Singleton.IsServer);
-                print(NetworkManager.Singleton.IsClient);*/
-                if (NetworkManager.Singleton.IsServer)
+                _life.Value += value;
+                print(Life);
+                if (_life.Value == 0 && NetworkManager.Singleton.IsHost)
                 {
-                    if (_life.Value == 0)
-                    {
-                        this.GetComponent<NetworkObject>().Despawn();
-                    }
+                    ImDeadServerRpc(NetworkManager.Singleton.LocalClientId);
                 }
-
             }
         }
     }
@@ -59,7 +51,6 @@ public class PlayerManager : NetworkBehaviour
         if(_hunterController == null)
         {
             _hunterController = GetComponentInChildren<HunterController>();
-            print(_hunterController);
         }
         if(_actionInput == null)
         {
@@ -70,7 +61,6 @@ public class PlayerManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        _hunterController.Deactivate();
         isHunter.OnValueChanged += (@previousValue, @newValue) => SwapTeam();
         if (IsOwner)
         {
@@ -118,5 +108,19 @@ public class PlayerManager : NetworkBehaviour
         bool isLocked = !_movementController.cursorLocked;
         Cursor.lockState = isLocked? CursorLockMode.Locked : CursorLockMode.None;
         _movementController.cursorLocked = isLocked;
+    }
+
+    [ServerRpc]
+    private void ImDeadServerRpc(ulong clientId)
+    {
+        var client = NetworkManager.Singleton.ConnectedClients[clientId];
+        var playerobject = client.PlayerObject;
+        playerobject.Despawn();
+        Destroy(playerobject.gameObject);
+
+        if (GameManager.Instance.playerList.OneMoreDeath(client))
+        {
+            print("Fin du jeu");
+        }
     }
 }
