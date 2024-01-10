@@ -19,7 +19,7 @@ FP1:
 - [x] FP1 – 8 : Certains éléments (Props) sont générés en nombre et position aléatoires.
 
 FP2:
-- [ ] FP2 – 1 : Les joueurs sont capables de changer d’équipe entre Props et Hunters.
+- [X] FP2 – 1 : Les joueurs sont capables de changer d’équipe entre Props et Hunters.
 - [x] FP2 – 2 : Les Hunters sont aveugles pendant les dix premières secondes de jeu
 - [X] FP2 – 3 : Les Hunters peuvent tirer des projectiles.
 - [X] FP2 – 4 : Les Hunters et Props ont des points de vie et sont éliminés quand leurs points de vie tombent à 0.
