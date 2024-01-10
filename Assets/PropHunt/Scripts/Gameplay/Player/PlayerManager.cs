@@ -51,6 +51,7 @@ public class PlayerManager : NetworkBehaviour
         if(_hunterController == null)
         {
             _hunterController = GetComponentInChildren<HunterController>();
+            //_hunterController.Deactivate();
         }
         if(_actionInput == null)
         {
