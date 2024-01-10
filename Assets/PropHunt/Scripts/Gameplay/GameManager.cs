@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -37,18 +38,23 @@ public class GameManager : NetworkBehaviour
         return _gameStatus.Value;
     }
     
-    public void StartGame()
+    IEnumerator SpawnPlayersWithDelay()
     {
-        //if (!IsServer) return;
-        _gameStatus.Value = GameEnum.IN_GAME;
-        // todo: spawn props random
-        // todo: spawn hunters at 0,0,0
+        yield return new WaitForSeconds(1);
         
+        _gameStatus.Value = GameEnum.IN_GAME;
         startTime = DateTime.Now;
         
         BlurHuntersCamera();
-        
         SpawnPlayersRandomly();
+    }
+
+    
+    public void StartGame()
+    {
+        if (!IsServer) return;
+
+        StartCoroutine(SpawnPlayersWithDelay());
     }
 
     void Update()
@@ -103,7 +109,7 @@ public class GameManager : NetworkBehaviour
     }
     
     
-    void SpawnPlayersRandomly()
+    private void SpawnPlayersRandomly()
     {
         // Assurez-vous que la liste des points d'apparition est suffisamment grande pour accueillir tous les joueurs
         if (spawnPoints.Count < NetworkManager.Singleton.ConnectedClientsList.Count)
@@ -113,20 +119,16 @@ public class GameManager : NetworkBehaviour
         }
 
         // Mélange la liste des points d'apparition
-        print("ShuffleSpawnPoints()");
         ShuffleSpawnPoints();
 
         // Distribue les joueurs parmi les points d'apparition
         int index = 0;
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
-            print("client" + client.ClientId);
             if (client.PlayerObject != null)
             {
-                print("client.PlayerObject" + client.PlayerObject.IsSpawned);
                 Transform spawnPoint = spawnPoints[index];
                 client.PlayerObject.transform.position = spawnPoint.position;
-                print("spawnPoint.position:" + spawnPoint.position);
 
                 index++;
 
