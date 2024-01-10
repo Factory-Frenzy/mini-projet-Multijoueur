@@ -8,11 +8,32 @@ public class PlayerManager : NetworkBehaviour
     public Camera Camera;
     protected ClassController _currentController;
     public bool isHunter = true;
+    private int _life = 10;
+    private readonly object _lock = new object();
 
     public ActionInput _actionInput;
     public Animator _animator;
     [SerializeField] PropController _propController;
     [SerializeField] HunterController _hunterController;
+    
+    public ulong NetworkClientId
+    {
+        get { return NetworkManager.Singleton.LocalClientId; }
+    }
+    public int Life
+    {
+        get
+        {
+            return _life;
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _life = _life + value;
+            }
+        }
+    }
 
     private void Awake()
     {
