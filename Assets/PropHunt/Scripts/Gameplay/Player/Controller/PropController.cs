@@ -266,11 +266,11 @@ public class PropController : ClassController
         focusedProp = null;
     }
     #endregion
-    
-    [ServerRpc]
+
+    [ServerRpc(RequireOwnership = false)]
     private void ChangeCurrentPropServerRPC(string propName)
     {
-        if(_currentMorphName.CanClientWrite(NetworkManager.Singleton.LocalClientId))
+        //if(_currentMorphName.CanClientWrite(NetworkManager.Singleton.LocalClientId))
         _currentMorphName.Value = propName;
     }
     
