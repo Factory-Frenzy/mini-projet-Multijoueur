@@ -102,6 +102,10 @@ public class ActionInput : MonoBehaviour
         _playerManager.ToggleCursorLock();
     }
 
-
+    public void OnShoot(CallbackContext context)
+    {
+        if (!context.performed) return;
+        _currentClassInput.Shoot();
+    }
 
 }

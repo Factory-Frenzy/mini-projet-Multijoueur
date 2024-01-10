@@ -21,6 +21,7 @@ public class HunterController : ClassController
     public void Shoot()
     {
         // rajouter le blocage dans la scene Lobby
+        print(GameManager.Instance.GetStatus());
         if (GameManager.Instance.GetStatus() == GameEnum.IN_GAME)
         {
             Vector3 positionInFront = transform.position + transform.forward;
