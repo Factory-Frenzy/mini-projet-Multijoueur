@@ -19,6 +19,12 @@ public class LaunchGameButton : MonoBehaviour
     public void LaunchGame()
     {
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
-        GameManager.Instance.StartGame();
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += @event =>
+        {
+            if (@event.SceneEventType == SceneEventType.LoadEventCompleted && @event.SceneName == GameSceneName)
+            {
+                GameManager.Instance.StartGame();
+            }
+        };
     }
 }

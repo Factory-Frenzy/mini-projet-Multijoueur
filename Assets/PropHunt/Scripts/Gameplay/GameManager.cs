@@ -1,13 +1,19 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using DepthOfField = UnityEngine.Rendering.Universal.DepthOfField;
+using Random = UnityEngine.Random;
 
 public class GameManager : NetworkBehaviour
 {
     private NetworkVariable<GameEnum> _gameStatus = new();
 
     public static GameManager Instance;
+    
+    // Liste des points d'apparition préréglés
+    public List<Transform> spawnPoints;
     
     public const float gameDuration = 180f;
     
@@ -32,16 +38,23 @@ public class GameManager : NetworkBehaviour
         return _gameStatus.Value;
     }
     
-    public void StartGame()
+    IEnumerator SpawnPlayersWithDelay()
     {
-        //if (!IsServer) return;
-        _gameStatus.Value = GameEnum.IN_GAME;
-        // todo: spawn props random
-        // todo: spawn hunters at 0,0,0
+        yield return new WaitForSeconds(1);
         
+        _gameStatus.Value = GameEnum.IN_GAME;
         startTime = DateTime.Now;
         
         BlurHuntersCamera();
+        SpawnPlayersRandomly();
+    }
+
+    
+    public void StartGame()
+    {
+        if (!IsServer) return;
+
+        StartCoroutine(SpawnPlayersWithDelay());
     }
 
     void Update()
@@ -92,6 +105,52 @@ public class GameManager : NetworkBehaviour
         {
             playerCamera.enabled = true;
             hunterBlurEnabled = false;
+        }
+    }
+    
+    
+    private void SpawnPlayersRandomly()
+    {
+        // Assurez-vous que la liste des points d'apparition est suffisamment grande pour accueillir tous les joueurs
+        if (spawnPoints.Count < NetworkManager.Singleton.ConnectedClientsList.Count)
+        {
+            Debug.LogError("Pas assez de points d'apparition pour tous les joueurs !");
+            return;
+        }
+
+        // Mélange la liste des points d'apparition
+        ShuffleSpawnPoints();
+
+        // Distribue les joueurs parmi les points d'apparition
+        int index = 0;
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject != null)
+            {
+                Transform spawnPoint = spawnPoints[index];
+                client.PlayerObject.transform.position = spawnPoint.position;
+
+                index++;
+
+                // Assurez-vous de ne pas dépasser la taille de la liste des points d'apparition
+                if (index >= spawnPoints.Count)
+                {
+                    Debug.LogWarning("Tous les points d'apparition ont été utilisés. Certains joueurs peuvent apparaître au même endroit.");
+                    break;
+                }
+            }
+        }
+    }
+
+    void ShuffleSpawnPoints()
+    {
+        // Mélange la liste des points d'apparition en utilisant l'algorithme de Fisher-Yates
+        for (int i = 0; i < spawnPoints.Count; i++)
+        {
+            int randomIndex = Random.Range(i, spawnPoints.Count);
+            Transform temp = spawnPoints[i];
+            spawnPoints[i] = spawnPoints[randomIndex];
+            spawnPoints[randomIndex] = temp;
         }
     }
 }

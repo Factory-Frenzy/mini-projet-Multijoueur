@@ -27,7 +27,7 @@ FP2:
 - [ ] FP2 – 6 : Une équipe gagne lorsque tous les membres de l’équipe adverse sont éliminés.
 - [x] FP2 – 7 : Fin de partie au bout de 3 minutes.
 - [X] FP2 – 8 : Bloquer la connexion si la partie est lancé
-- [ ] FP2 – 9 : Les joueurs sont placés aléatoirement dans la scène
+- [x] FP2 – 9 : Les joueurs sont placés aléatoirement dans la scène
 
 FP3:
 - [ ] FP2 – 1 : Les joueurs ont un score.

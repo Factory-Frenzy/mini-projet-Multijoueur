@@ -33,7 +33,7 @@ public class SpawnProps : MonoBehaviour
 
 static class MyExtensions
 {
-    private static System.Random rng = new System.Random();
+    private static System.Random rng = new();
 
     public static void Shuffle<T>(this IList<T> list)
     {
