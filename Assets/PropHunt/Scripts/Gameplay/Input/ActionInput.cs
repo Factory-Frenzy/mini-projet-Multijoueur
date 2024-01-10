@@ -93,7 +93,7 @@ public class ActionInput : MonoBehaviour
     {
         if (GameManager.Instance.GetStatus() == GameEnum.IN_GAME) return;
         if (!context.performed) return;
-        _playerManager.SwapTeam();
+        _playerManager.OnSwapTeam();
     }
 
     public void OnCursorLockToggle(CallbackContext context)

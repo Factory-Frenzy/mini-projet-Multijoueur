@@ -270,6 +270,7 @@ public class PropController : ClassController
     [ServerRpc]
     private void ChangeCurrentPropServerRPC(string propName)
     {
+        if(_currentMorphName.CanClientWrite(NetworkManager.Singleton.LocalClientId))
         _currentMorphName.Value = propName;
     }
     

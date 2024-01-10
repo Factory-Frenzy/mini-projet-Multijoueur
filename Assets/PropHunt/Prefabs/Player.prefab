@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5094366579795446125
 Transform:
   m_ObjectHideFlags: 0
@@ -758,7 +758,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 0}
-  isHunter: 1
+  isHunter:
+    m_InternalValue: 1
   _actionInput: {fileID: 3979293131715400837}
   _animator: {fileID: 2627273686261720279}
   _propController: {fileID: 5144100549423255631}

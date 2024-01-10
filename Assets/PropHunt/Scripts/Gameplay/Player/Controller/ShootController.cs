@@ -13,7 +13,7 @@ public class ShootController : MonoBehaviour
         {
             PlayerManager playerTouch = collision.gameObject.GetComponent<PlayerManager>();
             // Dommage pour les Props
-            if (playerTouch && !playerTouch.isHunter)
+            if (playerTouch && !playerTouch.isHunter.Value)
             {
                 playerTouch.Life = -1;
             }
