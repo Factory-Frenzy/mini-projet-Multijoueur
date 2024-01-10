@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using DepthOfField = UnityEngine.Rendering.Universal.DepthOfField;
 using Random = UnityEngine.Random;
@@ -16,11 +17,11 @@ public class GameManager : NetworkBehaviour
     public List<Transform> spawnPoints;
     
     public const float gameDuration = 180f;
-    
+    public PlayerList playerList;
     public float hunterBlurDuration = 10f;
     private bool hunterBlurEnabled = false;
     private DateTime startTime;
-    
+
     public void Awake()
     {
         if (Instance != null)
@@ -54,6 +55,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
+        playerList = new PlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
     }
 
@@ -153,4 +155,66 @@ public class GameManager : NetworkBehaviour
             spawnPoints[randomIndex] = temp;
         }
     }
+}
+
+public class PlayerList
+{
+    public int NbHunter = 0;
+    public int NbProp = 0;
+    public string TeamWin = Team.NOBODY;
+    public Dictionary<NetworkClient,int> ScorePlayers = new Dictionary<NetworkClient,int>();
+    public PlayerList()
+    {
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject.GetComponent<PlayerManager>().isHunter.Value)
+            {
+                NbHunter++;
+            }
+            else
+            {
+                NbProp++;
+            }
+            ScorePlayers.Add(client, 0);
+        }
+    }
+
+    public bool OneMoreDeath(NetworkClient death)
+    {
+        if (death.PlayerObject.GetComponent<PlayerManager>().isHunter.Value)
+        {
+            NbHunter--;
+        }
+        else
+        {
+            NbProp--;
+        }
+
+        return TeamWinCheck();
+    }
+
+    private bool TeamWinCheck()
+    {
+        if (NbHunter == 0)
+        {
+            TeamWin = Team.PROB;
+            return true;
+        }
+        else if (NbProp == 0)
+        {
+            TeamWin = Team.HUNTER;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}
+
+public struct Team
+{
+    public const string HUNTER = "Hunter";
+    public const string PROB = "Prob";
+    public const string NOBODY = "";
 }

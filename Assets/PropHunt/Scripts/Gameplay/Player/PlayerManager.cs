@@ -113,8 +113,14 @@ public class PlayerManager : NetworkBehaviour
     [ServerRpc]
     private void ImDeadServerRpc(ulong clientId)
     {
-        var playerobject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+        var client = NetworkManager.Singleton.ConnectedClients[clientId];
+        var playerobject = client.PlayerObject;
         playerobject.Despawn();
         Destroy(playerobject.gameObject);
+
+        if (GameManager.Instance.playerList.OneMoreDeath(client))
+        {
+            print("Fin du jeu");
+        }
     }
 }
