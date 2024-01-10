@@ -21,9 +21,11 @@ public class HunterController : ClassController
     public void Shoot()
     {
         // rajouter le blocage dans la scene Lobby
-
-        Vector3 positionInFront = transform.position + transform.forward;
-        ShootOnlineServerRpc(positionInFront, transform.rotation);
+        if (GameManager.Instance.GetStatus() == GameEnum.IN_GAME)
+        {
+            Vector3 positionInFront = transform.position + transform.forward;
+            ShootOnlineServerRpc(positionInFront, transform.rotation);
+        }
     }
 
     [ServerRpc]

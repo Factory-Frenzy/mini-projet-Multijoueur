@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ShootController : MonoBehaviour
@@ -8,11 +9,15 @@ public class ShootController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        PlayerManager playermanager = collision.gameObject.GetComponent<PlayerManager>();
-        if (playermanager)
+        if (NetworkManager.Singleton.IsServer)
         {
-            //playermanager.NetworkClientId
-            playermanager.Life = -1;
+            PlayerManager playermanager = collision.gameObject.GetComponent<PlayerManager>();
+            if (playermanager)
+            {
+                playermanager.Life = -1;
+            }
+            this.GetComponent<NetworkObject>().Despawn();
+            Destroy(this.gameObject);
         }
     }
 }

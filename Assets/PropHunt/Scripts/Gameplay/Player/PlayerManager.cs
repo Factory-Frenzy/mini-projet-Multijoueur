@@ -8,7 +8,7 @@ public class PlayerManager : NetworkBehaviour
     public Camera Camera;
     protected ClassController _currentController;
     public bool isHunter = true;
-    private int _life = 10;
+    private NetworkVariable<int> _life = new NetworkVariable<int>(10,NetworkVariableReadPermission.Everyone);
     private readonly object _lock = new object();
 
     public ActionInput _actionInput;
@@ -24,13 +24,18 @@ public class PlayerManager : NetworkBehaviour
     {
         get
         {
-            return _life;
+            return _life.Value;
         }
         set
         {
             lock (_lock)
             {
-                _life = _life + value;
+                _life.Value = _life.Value + value;
+                print(Life);
+                if (_life.Value == 0 )
+                {
+                    ImDead(NetworkManager.Singleton.LocalClientId);
+                }
             }
         }
     }
@@ -94,5 +99,13 @@ public class PlayerManager : NetworkBehaviour
         bool isLocked = !_movementController.cursorLocked;
         Cursor.lockState = isLocked? CursorLockMode.Locked : CursorLockMode.None;
         _movementController.cursorLocked = isLocked;
+    }
+
+    [ServerRpc]
+    private void ImDead(ulong clientId)
+    {
+        var playerobject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+        playerobject.Despawn();
+        Destroy(playerobject.gameObject);
     }
 }
