@@ -11,10 +11,16 @@ public class ShootController : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsServer)
         {
-            PlayerManager playermanager = collision.gameObject.GetComponent<PlayerManager>();
-            if (playermanager)
+            PlayerManager playerTouch = collision.gameObject.GetComponent<PlayerManager>();
+            // Dommage pour les Props
+            if (playerTouch && !playerTouch.isHunter)
             {
-                playermanager.Life = -1;
+                playerTouch.Life = -1;
+            }
+            else
+            {
+                GameObject senderPlayer = NetworkManager.Singleton.ConnectedClients[ShootInfo.SenderId].PlayerObject.gameObject;
+                senderPlayer.GetComponent<PlayerManager>().Life = -1;
             }
             this.GetComponent<NetworkObject>().Despawn();
             Destroy(this.gameObject);
