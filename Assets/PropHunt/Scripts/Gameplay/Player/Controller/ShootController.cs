@@ -23,7 +23,7 @@ public class ShootController : MonoBehaviour
                 senderPlayer.GetComponent<PlayerManager>().Life = -1;
             }
             this.GetComponent<NetworkObject>().Despawn();
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
         }
     }
 }
