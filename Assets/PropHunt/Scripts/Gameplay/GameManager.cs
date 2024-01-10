@@ -34,7 +34,7 @@ public class GameManager : NetworkBehaviour
     
     public void StartGame()
     {
-        if (!IsServer) return;
+        //if (!IsServer) return;
         _gameStatus.Value = GameEnum.IN_GAME;
         // todo: spawn props random
         // todo: spawn hunters at 0,0,0
