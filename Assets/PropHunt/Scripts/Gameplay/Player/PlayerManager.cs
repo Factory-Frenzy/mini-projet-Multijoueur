@@ -34,7 +34,7 @@ public class PlayerManager : NetworkBehaviour
                 print(Life);
                 if (_life.Value == 0 )
                 {
-                    ImDead(NetworkManager.Singleton.LocalClientId);
+                    ImDeadServerRpc(NetworkManager.Singleton.LocalClientId);
                 }
             }
         }
@@ -102,7 +102,7 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void ImDead(ulong clientId)
+    private void ImDeadServerRpc(ulong clientId)
     {
         var playerobject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
         playerobject.Despawn();
