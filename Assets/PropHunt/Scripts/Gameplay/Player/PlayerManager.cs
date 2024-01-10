@@ -32,7 +32,7 @@ public class PlayerManager : NetworkBehaviour
             {
                 _life.Value = _life.Value + value;
                 print(Life);
-                if (_life.Value == 0 )
+                if (_life.Value == 0 && NetworkManager.Singleton.IsHost)
                 {
                     ImDeadServerRpc(NetworkManager.Singleton.LocalClientId);
                 }
