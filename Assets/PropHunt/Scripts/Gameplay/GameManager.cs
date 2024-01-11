@@ -161,8 +161,8 @@ public class PlayerList
 {
     public int NbHunter = 0;
     public int NbProp = 0;
-    public string TeamWin = Team.NOBODY;
-    public Dictionary<NetworkClient,int> ScorePlayers = new Dictionary<NetworkClient,int>();
+    public NetworkVariable<string> TeamWin = new NetworkVariable<string>(Team.NOBODY, NetworkVariableReadPermission.Everyone);
+    public NetworkVariable<Dictionary<ulong,int>> ScorePlayers = new NetworkVariable<Dictionary<ulong, int>>(new Dictionary<ulong, int>(),NetworkVariableReadPermission.Everyone);
     public PlayerList()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
@@ -175,7 +175,7 @@ public class PlayerList
             {
                 NbProp++;
             }
-            ScorePlayers.Add(client, 0);
+            ScorePlayers.Value.Add(client.ClientId, 0);
         }
     }
 
@@ -200,12 +200,12 @@ public class PlayerList
     {
         if (NbHunter == 0)
         {
-            TeamWin = Team.PROB;
+            TeamWin.Value = Team.PROB;
             return true;
         }
         else if (NbProp == 0)
         {
-            TeamWin = Team.HUNTER;
+            TeamWin.Value = Team.HUNTER;
             return true;
         }
         else
