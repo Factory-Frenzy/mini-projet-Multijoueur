@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting.FullSerializer;
+using UnityEditor.Build.Pipeline;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Events;
 using DepthOfField = UnityEngine.Rendering.Universal.DepthOfField;
 using Random = UnityEngine.Random;
 
@@ -62,6 +65,7 @@ public class GameManager : NetworkBehaviour
 
     private IEnumerator GivingSurvivalPoints()
     {
+        yield return new WaitForSeconds(15);
         foreach (var item in playerList.ScorePlayers.Value)
         {
             if (item.IsAlive)
@@ -69,7 +73,6 @@ public class GameManager : NetworkBehaviour
                 item.Score += 10;
             }
         }
-        yield return new WaitForSeconds(15);
         if (GameManager.Instance.playerList.TeamWin.Value == Team.NOBODY)
         {
             StartCoroutine(GivingSurvivalPoints());
@@ -253,13 +256,22 @@ public struct Team
 
 public class ScoreClass
 {
+    private int _score = 0;
     public ulong ClientId { get; set; }
-    public int Score { get; set; }
+    public int Score
+    {
+        get { return _score; }
+        set
+        {
+            _score = value;
+            ScoreUpdate?.Invoke(this,EventArgs.Empty);
+        }
+    }
     public bool IsAlive { get; set; }
+    public event EventHandler ScoreUpdate;
     public ScoreClass(ulong clientId)
     {
         ClientId = clientId;
-        Score = 0;
         IsAlive = true;
     }
 }

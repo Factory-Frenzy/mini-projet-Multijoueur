@@ -16,6 +16,7 @@ public class PlayerManager : NetworkBehaviour
     public Animator _animator;
     [SerializeField] PropController _propController;
     [SerializeField] HunterController _hunterController;
+    public event EventHandler OnLifeUpdate;
 
     public ulong NetworkClientId
     {
@@ -32,6 +33,8 @@ public class PlayerManager : NetworkBehaviour
             lock (_lock)
             {
                 _life.Value = _life.Value + value;
+                OnLifeUpdate?.Invoke(this, EventArgs.Empty);
+
                 if (NetworkManager.Singleton.IsServer)
                 {
                     // Je suis toucher par un boulet, je perds des points de score
