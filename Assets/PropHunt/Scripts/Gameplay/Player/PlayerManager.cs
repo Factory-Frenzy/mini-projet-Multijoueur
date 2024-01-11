@@ -95,16 +95,16 @@ public class PlayerManager : NetworkBehaviour
         //isHunter.Value = !isHunter.Value;
         if (isHunter.Value)
         {
-            _movementController.ClassController = _propController;
-            _actionInput.SetClassInput(_propController.ClassInput);
-            _hunterController.Deactivate();
-            _propController.Activate();
+            _movementController.ClassController = _hunterController;
+            _actionInput.SetClassInput(_hunterController.ClassInput);
+            _propController.Deactivate();
+            _hunterController.Activate();
             return;
         }
-        _movementController.ClassController = _hunterController;
-        _actionInput.SetClassInput(_hunterController.ClassInput);
-        _propController.Deactivate();
-        _hunterController.Activate();
+        _movementController.ClassController = _propController;
+        _actionInput.SetClassInput(_propController.ClassInput);
+        _hunterController.Deactivate();
+        _propController.Activate();
     }
 
     public void OnSwapTeam()
