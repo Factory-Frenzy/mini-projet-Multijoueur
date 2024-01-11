@@ -83,6 +83,7 @@ public class PlayerManager : NetworkBehaviour
             _movementController.enabled = true;
             Camera.gameObject.SetActive(true);
             _movementController.SetAnimator(GetComponent<Animator>());
+            isHunter.Value = !isHunter.Value;
             return;
         }
         //isHunter.Value = !isHunter.Value;
