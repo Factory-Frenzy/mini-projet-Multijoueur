@@ -179,8 +179,11 @@ public class PlayerList
         }
     }
 
-    public bool OneMoreDeath(NetworkClient death)
+    public bool OneMoreDeath(ulong deathId)
     {
+        var death = NetworkManager.Singleton.ConnectedClients[deathId];
+        if (death == null) throw new InvalidOperationException("Message d'erreur OneMoreDeath");
+
         if (death.PlayerObject.GetComponent<PlayerManager>().isHunter.Value)
         {
             NbHunter--;

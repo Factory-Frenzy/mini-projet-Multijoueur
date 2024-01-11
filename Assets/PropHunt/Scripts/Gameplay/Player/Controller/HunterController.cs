@@ -34,8 +34,6 @@ public class HunterController : ClassController
     {
         GameObject spawnedSphere = Instantiate(Sphere, positionInFront, rotation);
         spawnedSphere.GetComponent<NetworkObject>().Spawn();
-        spawnedSphere.GetComponent<Rigidbody>().isKinematic = false;
-        spawnedSphere.GetComponent<Rigidbody>().AddForce(transform.forward * 1000 + Vector3.up * 50);
         ShootController shootController = spawnedSphere.GetComponent<ShootController>();
         shootController.ShootInfo = new ShootInfo() { SenderId = serverRpcParams.Receive.SenderClientId };
     }
