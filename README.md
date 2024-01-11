@@ -24,7 +24,7 @@ FP2:
 - [X] FP2 – 3 : Les Hunters peuvent tirer des projectiles.
 - [X] FP2 – 4 : Les Hunters et Props ont des points de vie et sont éliminés quand leurs points de vie tombent à 0.
 - [X] FP2 – 5 : Les Hunters perdent de la vie lorsqu’ils touchent autre chose qu’un Props et les Props perdent de la vie lorsque touchés par un projectile de Hunter.
-- [ ] FP2 – 6 : Une équipe gagne lorsque tous les membres de l’équipe adverse sont éliminés.
+- [X] FP2 – 6 : Une équipe gagne lorsque tous les membres de l’équipe adverse sont éliminés.
 - [x] FP2 – 7 : Fin de partie au bout de 3 minutes.
 - [X] FP2 – 8 : Bloquer la connexion si la partie est lancé
 - [x] FP2 – 9 : Les joueurs sont placés aléatoirement dans la scène

@@ -3,10 +3,19 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ShootController : MonoBehaviour
+public class ShootController : NetworkBehaviour
 {
     public ShootInfo ShootInfo;
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            this.GetComponent<Rigidbody>().isKinematic = false;
+            this.GetComponent<Rigidbody>().AddForce(transform.forward * 1000 + Vector3.up * 50);
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (NetworkManager.Singleton.IsServer)

@@ -8,7 +8,7 @@ public class PlayerManager : NetworkBehaviour
     protected MovementController _movementController;
     public Camera Camera;
     protected ClassController _currentController;
-    public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private NetworkVariable<int> _life = new NetworkVariable<int>(10,NetworkVariableReadPermission.Everyone);
     private readonly object _lock = new object();
 
@@ -32,7 +32,7 @@ public class PlayerManager : NetworkBehaviour
             lock (_lock)
             {
                 _life.Value = _life.Value + value;
-                //print("Life Hunter="+isHunter.Value+": "+_life.Value);
+                print("Life Hunter="+isHunter.Value+": "+_life.Value);
                 /*print(NetworkManager.Singleton.ConnectedClientsIds.Count);
                 print(NetworkManager.Singleton.IsHost);
                 print(NetworkManager.Singleton.IsServer);
@@ -42,6 +42,9 @@ public class PlayerManager : NetworkBehaviour
                     if (_life.Value == 0)
                     {
                         this.GetComponent<NetworkObject>().Despawn();
+                        print("ID client death = "+GetComponent<NetworkObject>().OwnerClientId);
+                        bool win = GameManager.Instance.playerList.OneMoreDeath(GetComponent<NetworkObject>().OwnerClientId);
+                        if (win) print("L'équipe gagnante est "+GameManager.Instance.playerList.TeamWin);
                     }
                 }
 
@@ -70,11 +73,11 @@ public class PlayerManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        _hunterController.Deactivate();
+        //_hunterController.Deactivate();
+        SwapTeam();
         isHunter.OnValueChanged += (@previousValue, @newValue) => SwapTeam();
         if (IsOwner)
         {
-            isHunter.Value = !isHunter.Value;
             GetComponent<PlayerInput>().enabled = true;
             GetComponent<AudioListener>().enabled = true;
             _movementController.enabled = true;
