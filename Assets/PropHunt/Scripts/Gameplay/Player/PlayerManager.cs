@@ -32,13 +32,10 @@ public class PlayerManager : NetworkBehaviour
             lock (_lock)
             {
                 _life.Value = _life.Value + value;
-                //print("Life Hunter="+isHunter.Value+": "+_life.Value);
-                /*print(NetworkManager.Singleton.ConnectedClientsIds.Count);
-                print(NetworkManager.Singleton.IsHost);
-                print(NetworkManager.Singleton.IsServer);
-                print(NetworkManager.Singleton.IsClient);*/
                 if (NetworkManager.Singleton.IsServer)
                 {
+                    // Je suis toucher par un boulet, je perds des points de score
+                    GameManager.Instance.playerList.GetPlayerInfo(NetworkManager.Singleton.LocalClientId).Score -= 100;
                     if (_life.Value == 0)
                     {
                         this.GetComponent<NetworkObject>().Despawn();

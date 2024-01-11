@@ -32,8 +32,8 @@ FP2:
 FP3:
 - [ ] FP2 – 1 : Les joueurs ont un score.
 - [ ] FP2 – 2 : Le score des Props augmente en fonction du temps passé en vie.
-- [ ] FP2 – 3 : Le score des Props augmente à chaque Taunt (provocation) utilisée.
-- [ ] FP2 – 4 : Le score des Hunters augmente lorsqu’ils touchent un Prop.
-- [ ] FP2 – 5 : Le score des joueurs diminue lorsqu’ils perdent des points de vie.
+- [ ] FP2 – 3 : Le score des Props augmente à chaque Taunt (provocation) utilisée. (+500)
+- [ ] FP2 – 4 : Le score des Hunters augmente lorsqu’ils touchent un Prop. (+1000)
+- [ ] FP2 – 5 : Le score des joueurs diminue lorsqu’ils perdent des points de vie. (-100)
 - [ ] FP2 – 6 : Un tableau récapitulatif des scores s’affiche à la fin de la partie.
 - [ ] FP2 – 7 : Les props peuvent verrouiller leur position

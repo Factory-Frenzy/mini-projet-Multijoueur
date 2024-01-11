@@ -57,6 +57,23 @@ public class GameManager : NetworkBehaviour
 
         playerList = new PlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
+        StartCoroutine(GivingSurvivalPoints());
+    }
+
+    private IEnumerator GivingSurvivalPoints()
+    {
+        foreach (var item in playerList.ScorePlayers.Value)
+        {
+            if (item.IsAlive)
+            {
+                item.Score += 10;
+            }
+        }
+        yield return new WaitForSeconds(15);
+        if (GameManager.Instance.playerList.TeamWin.Value == Team.NOBODY)
+        {
+            StartCoroutine(GivingSurvivalPoints());
+        }
     }
 
     void Update()
@@ -162,7 +179,7 @@ public class PlayerList
     public int NbHunter = 0;
     public int NbProp = 0;
     public NetworkVariable<string> TeamWin = new NetworkVariable<string>(Team.NOBODY, NetworkVariableReadPermission.Everyone);
-    public NetworkVariable<Dictionary<ulong,int>> ScorePlayers = new NetworkVariable<Dictionary<ulong, int>>(new Dictionary<ulong, int>(),NetworkVariableReadPermission.Everyone);
+    public NetworkVariable<List<ScoreClass>> ScorePlayers = new NetworkVariable<List<ScoreClass>>(new List<ScoreClass>());
     public PlayerList()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
@@ -175,7 +192,7 @@ public class PlayerList
             {
                 NbProp++;
             }
-            ScorePlayers.Value.Add(client.ClientId, 0);
+            ScorePlayers.Value.Add(new ScoreClass(client.ClientId));
         }
     }
 
@@ -192,7 +209,7 @@ public class PlayerList
         {
             NbProp--;
         }
-
+        GetPlayerInfo(deathId).IsAlive = false;
         return TeamWinCheck();
     }
 
@@ -213,6 +230,18 @@ public class PlayerList
             return false;
         }
     }
+
+    public ScoreClass GetPlayerInfo(ulong clientId)
+    {
+        foreach (var item in ScorePlayers.Value)
+        {
+            if (item.ClientId == clientId)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
 }
 
 public struct Team
@@ -220,4 +249,17 @@ public struct Team
     public const string HUNTER = "Hunter";
     public const string PROB = "Prob";
     public const string NOBODY = "";
+}
+
+public class ScoreClass
+{
+    public ulong ClientId { get; set; }
+    public int Score { get; set; }
+    public bool IsAlive { get; set; }
+    public ScoreClass(ulong clientId)
+    {
+        ClientId = clientId;
+        Score = 0;
+        IsAlive = true;
+    }
 }

@@ -25,6 +25,8 @@ public class ShootController : NetworkBehaviour
             if (playerTouch && !playerTouch.isHunter.Value)
             {
                 playerTouch.Life = -1;
+                // Le SenderId vient de toucher un Prop, il gagne donc 1000 point de score
+                GameManager.Instance.playerList.GetPlayerInfo(ShootInfo.SenderId).Score += 1000;
             }
             else
             {

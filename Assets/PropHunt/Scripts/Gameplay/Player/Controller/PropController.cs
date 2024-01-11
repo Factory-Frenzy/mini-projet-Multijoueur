@@ -132,7 +132,8 @@ public class PropController : ClassController
     public void Taunt()
     {
         var tauntNumber = Random.Range(0, TauntList.Length);
-        SendTauntServerRpc(tauntNumber);
+        SendTauntServerRpc(tauntNumber, NetworkManager.Singleton.LocalClientId);
+
     }
     #endregion
 
@@ -279,11 +280,13 @@ public class PropController : ClassController
     /// </summary>
     /// <param name="tauntNumber"></param>
     [ServerRpc]
-    public void SendTauntServerRpc(int tauntNumber)
+    public void SendTauntServerRpc(int tauntNumber, ulong clientId)
     {
         if (_isTauntAvailable)
         {
             SendTauntClientRpc(tauntNumber);
+            // Le Prop vient de lancer une provacation, il gagne 500 points
+            GameManager.Instance.playerList.GetPlayerInfo(clientId).Score += 500;
             _nextTauntAvailableTime = Time.time + _tauntCooldownTime;
             _isTauntAvailable = false;
         }
