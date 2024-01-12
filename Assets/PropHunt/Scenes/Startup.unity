@@ -209,7 +209,6 @@ GameObject:
   - component: {fileID: 1009391965}
   - component: {fileID: 1009391963}
   - component: {fileID: 1009391964}
-  - component: {fileID: 1009391966}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -256,7 +255,6 @@ MonoBehaviour:
   - {fileID: 1150162173}
   - {fileID: 1891049746}
   - {fileID: 2013013361}
-  playerList: {fileID: 1009391966}
   hunterBlurDuration: 10
 --- !u!4 &1009391965
 Transform:
@@ -273,20 +271,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1009391966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1009391962}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 112a4b69636bf0e46aaabf13fa57ced2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TeamWin:
-    m_InternalValue: 
 --- !u!1 &1150162172
 GameObject:
   m_ObjectHideFlags: 0

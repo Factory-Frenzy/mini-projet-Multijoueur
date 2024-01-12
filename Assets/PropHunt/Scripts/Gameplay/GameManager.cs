@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor.Build.Pipeline;
 using UnityEditor.PackageManager;
@@ -20,6 +21,7 @@ public class GameManager : NetworkBehaviour
     public List<Transform> spawnPoints;
     
     public const float gameDuration = 180f;
+    [NonSerialized]
     public PlayerList playerList;
     public float hunterBlurDuration = 10f;
     private bool hunterBlurEnabled = false;
@@ -58,6 +60,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
+        playerList = this.AddComponent<PlayerList>();
         playerList.InitPlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
         StartCoroutine(GivingSurvivalPoints());
