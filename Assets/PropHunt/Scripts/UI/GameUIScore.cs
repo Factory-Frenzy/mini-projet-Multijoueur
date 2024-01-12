@@ -10,7 +10,7 @@ public class GameUIScore : MonoBehaviour
     [SerializeField] private TextMeshProUGUI life_TextMeshPro;
     void Start()
     {
-        print(GameManager.Instance);
+        print(GameManager.Instance.playerList);
         GameManager.Instance.playerList.GetPlayerInfo(NetworkManager.Singleton.LocalClientId).ScoreUpdate += ScoreUIUpdate;
         NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerManager>().OnLifeUpdate += LifeUIUpdate;
         var lifeStart = NetworkManager.Singleton.LocalClient.PlayerObject.gameObject.GetComponent<PlayerManager>().Life;

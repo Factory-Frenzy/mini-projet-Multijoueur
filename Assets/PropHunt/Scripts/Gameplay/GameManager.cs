@@ -58,7 +58,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        playerList.GetPlayerList();
+        playerList.InitPlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
         StartCoroutine(GivingSurvivalPoints());
     }
@@ -66,11 +66,11 @@ public class GameManager : NetworkBehaviour
     private IEnumerator GivingSurvivalPoints()
     {
         yield return new WaitForSeconds(15);
-        foreach (var item in playerList.ScorePlayers.Value)
+        foreach (var item in playerList.ScorePlayers)
         {
-            if (item.IsAlive)
+            if (item.Value.IsAlive)
             {
-                item.Score += 10;
+                item.Value.Score += 10;
             }
         }
         if (GameManager.Instance.playerList.TeamWin.Value == Team.NOBODY)
@@ -179,11 +179,11 @@ public class GameManager : NetworkBehaviour
 
 public class PlayerList
 {
-    public int NbHunter = 0;
-    public int NbProp = 0;
+    private int NbHunter = 0;
+    private int NbProp = 0;
     public NetworkVariable<string> TeamWin = new NetworkVariable<string>(Team.NOBODY, NetworkVariableReadPermission.Everyone);
-    public NetworkVariable<List<ScoreClass>> ScorePlayers = new NetworkVariable<List<ScoreClass>>(new List<ScoreClass>());
-    public void GetPlayerList()
+    public List<NetworkVariable<ScoreClass>> ScorePlayers = new List<NetworkVariable<ScoreClass>>();
+    public void InitPlayerList()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
@@ -195,7 +195,8 @@ public class PlayerList
             {
                 NbProp++;
             }
-            ScorePlayers.Value.Add(new ScoreClass(client.ClientId));
+            //ScorePlayers.Value.Add(new ScoreClass(client.ClientId));
+            ScorePlayers.Add(new NetworkVariable<ScoreClass>(new ScoreClass(client.ClientId)));
         }
     }
 
@@ -236,11 +237,11 @@ public class PlayerList
 
     public ScoreClass GetPlayerInfo(ulong clientId)
     {
-        foreach (var item in ScorePlayers.Value)
+        foreach (var item in ScorePlayers)
         {
-            if (item.ClientId == clientId)
+            if (item.Value.ClientId == clientId)
             {
-                return item;
+                return item.Value;
             }
         }
         return null;
