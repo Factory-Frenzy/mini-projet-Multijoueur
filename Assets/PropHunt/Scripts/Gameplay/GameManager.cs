@@ -20,7 +20,7 @@ public class GameManager : NetworkBehaviour
     public List<Transform> spawnPoints;
     
     public const float gameDuration = 180f;
-    public PlayerList playerList;
+    public PlayerList playerList = new PlayerList();
     public float hunterBlurDuration = 10f;
     private bool hunterBlurEnabled = false;
     private DateTime startTime;
@@ -58,7 +58,7 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        playerList = new PlayerList();
+        playerList.GetPlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
         StartCoroutine(GivingSurvivalPoints());
     }
@@ -183,7 +183,7 @@ public class PlayerList
     public int NbProp = 0;
     public NetworkVariable<string> TeamWin = new NetworkVariable<string>(Team.NOBODY, NetworkVariableReadPermission.Everyone);
     public NetworkVariable<List<ScoreClass>> ScorePlayers = new NetworkVariable<List<ScoreClass>>(new List<ScoreClass>());
-    public PlayerList()
+    public void GetPlayerList()
     {
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
