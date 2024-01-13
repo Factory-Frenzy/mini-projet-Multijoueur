@@ -758,8 +758,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 0}
-  isHunter:
-    m_InternalValue: 1
+  _life:
+    m_InternalValue: 10
   _actionInput: {fileID: 3979293131715400837}
   _animator: {fileID: 2627273686261720279}
   _propController: {fileID: 5144100549423255631}
@@ -997,6 +997,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 1da5af27-2d1a-42f5-8933-6b1547eb3b4b
     m_ActionName: gameplay/Shoot[/Keyboard/p]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8027542611091216172}
+        m_TargetAssemblyTypeName: MovementController, Assembly-CSharp
+        m_MethodName: ChangeLockPosition
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7eacc327-511a-4763-99aa-6310f2129833
+    m_ActionName: gameplay/LockPosition[/Keyboard/o]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: gameplay

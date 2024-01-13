@@ -16,6 +16,7 @@ public class MovementController : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private Vector2 m_Rotation;
+    private bool lockPosition = false;
 
     public ClassController ClassController
     {
@@ -69,6 +70,8 @@ public class MovementController : MonoBehaviour
     [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
     public float JumpTimeout = 0.50f;
 
+    private PlayerManager _playerManager;
+
     public void OnEnable()
     {
         enabled = true;
@@ -76,6 +79,7 @@ public class MovementController : MonoBehaviour
         this.CameraTransform = GetComponentInChildren<Camera>(true).transform;
         Cursor.lockState = CursorLockMode.Locked;
         _rigidbody = GetComponent<Rigidbody>();
+        _playerManager = GetComponent<PlayerManager>();
     }
 
     public void SetAnimator(Animator animator)
@@ -151,10 +155,21 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        GroundCheck();
-        Look();
-        Jump();
-        Move();
+        if (!lockPosition)
+        {
+            GroundCheck();
+            Look();
+            Jump();
+            Move();
+        }
+    }
+
+    public void ChangeLockPosition()
+    {
+        if (!_playerManager.isHunter.Value && GameManager.Instance.GetStatus() == GameEnum.IN_GAME)
+        {
+            lockPosition = !lockPosition;
+        }
     }
 
     protected void Look()
