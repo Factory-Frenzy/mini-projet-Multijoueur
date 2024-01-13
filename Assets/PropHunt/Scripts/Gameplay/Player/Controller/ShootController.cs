@@ -21,6 +21,7 @@ public class ShootController : NetworkBehaviour
         if (NetworkManager.Singleton.IsServer)
         {
             PlayerManager playerTouch = collision.gameObject.GetComponent<PlayerManager>();
+            print("Objet touché: "+collision.gameObject.name);
             // Dommage pour les Props
             if (playerTouch && !playerTouch.isHunter.Value)
             {

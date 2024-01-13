@@ -48,6 +48,7 @@ public class GameManager : NetworkBehaviour
         
         BlurHuntersCamera();
         SpawnPlayersRandomly();
+        StartCoroutine(GivingSurvivalPoints());
     }
 
     
@@ -155,13 +156,31 @@ public class GameManager : NetworkBehaviour
             spawnPoints[randomIndex] = temp;
         }
     }
+
+    private IEnumerator GivingSurvivalPoints()
+    {
+        yield return new WaitForSeconds(15);
+        foreach (var item in playerList.clientInfos)
+        {
+            if (item.IsAlive)
+            {
+                item.Score += 10;
+                print("Le Client:"+item.ClientId+" vient de gagner +10 point. Total = "+item.Score);
+            }
+        }
+        if (TeamWin.Value == Team.NOBODY)
+        {
+            StartCoroutine(GivingSurvivalPoints());
+        }
+    }
 }
 
 public class PlayerList
 {
     private int NbHunter = 0;
     private int NbProp = 0;
-    private List<ClientInfo> clientInfos;
+
+    public List<ClientInfo> clientInfos;
     public PlayerList()
     {
         clientInfos = new List<ClientInfo>();
@@ -226,18 +245,18 @@ public struct Team
 public class ClientInfo : INetworkSerializable
 {
     public ulong ClientId;
-    public bool Alive;
+    public bool IsAlive;
     public int Score;
     public ClientInfo(ulong ClientId)
     {
         this.ClientId = ClientId;
-        this.Alive = true;
+        this.IsAlive = true;
         this.Score = 0;
     }
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
         serializer.SerializeValue(ref ClientId);
-        serializer.SerializeValue(ref Alive);
+        serializer.SerializeValue(ref IsAlive);
         serializer.SerializeValue(ref Score);
     }
 }

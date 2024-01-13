@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 2324730062168697914}
   - component: {fileID: 132219225318459279}
   - component: {fileID: 7864264512145806858}
-  - component: {fileID: 1636395615533785474}
   - component: {fileID: 6202914755483057921}
   - component: {fileID: -1832758926002675082}
   - component: {fileID: -817438491672848048}
   - component: {fileID: 956549114177467778}
   - component: {fileID: 1119132937903583769}
+  - component: {fileID: 1672375441569099148}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -33,9 +33,9 @@ Transform:
   m_GameObject: {fileID: 4773301644398790453}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.707, y: 1.8936546, z: -3.3613434}
-  m_LocalScale: {x: 0.1920907, y: 0.17717876, z: -0.1448237}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 2.707, y: 1.889, z: -3.3613434}
+  m_LocalScale: {x: 0.29, y: 0.29, z: 0.29}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -89,27 +89,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &1636395615533785474
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4773301644398790453}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6202914755483057921
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -149,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3271393259
+  GlobalObjectIdHash: 2066253797
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -211,3 +190,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d92b7c013dda2b42a9304787c7726a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &1672375441569099148
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4773301644398790453}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

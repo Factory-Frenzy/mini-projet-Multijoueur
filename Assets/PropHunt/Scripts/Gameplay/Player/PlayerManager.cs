@@ -6,16 +6,17 @@ using UnityEngine.InputSystem;
 public class PlayerManager : NetworkBehaviour
 {
     protected MovementController _movementController;
-    public Camera Camera;
     protected ClassController _currentController;
-    public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    private NetworkVariable<int> _life = new NetworkVariable<int>(10, NetworkVariableReadPermission.Everyone);
-    private readonly object _lock = new object();
 
+    public Camera Camera;
+    [NonSerialized] public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> _life = new NetworkVariable<int>(10, NetworkVariableReadPermission.Everyone);
     public ActionInput _actionInput;
     public Animator _animator;
-    [SerializeField] PropController _propController;
-    [SerializeField] HunterController _hunterController;
+
+    [SerializeField] private PropController _propController;
+    [SerializeField] private HunterController _hunterController;
+    private readonly object _lock = new object();
 
     public ulong NetworkClientId
     {
@@ -48,6 +49,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void Awake()
     {
+        print("isHunter0: " + isHunter.Value);
         _movementController = GetComponent<MovementController>();
         if (_propController == null)
         {
@@ -63,11 +65,13 @@ public class PlayerManager : NetworkBehaviour
             _actionInput = GetComponent<ActionInput>();
         }
         if (Camera == null) Camera = GetComponentInChildren<Camera>(true);
+        print("isHunter1: " + isHunter.Value);
     }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         SwapTeam();
+        print("isHunter2: " + isHunter.Value);
         isHunter.OnValueChanged += (@previousValue, @newValue) => SwapTeam();
         if (IsOwner)
         {
@@ -92,16 +96,16 @@ public class PlayerManager : NetworkBehaviour
         //isHunter.Value = !isHunter.Value;
         if (isHunter.Value)
         {
-            _movementController.ClassController = _propController;
-            _actionInput.SetClassInput(_propController.ClassInput);
-            _hunterController.Deactivate();
-            _propController.Activate();
+            _movementController.ClassController = _hunterController;
+            _actionInput.SetClassInput(_hunterController.ClassInput);
+            _propController.Deactivate();
+            _hunterController.Activate();
             return;
         }
-        _movementController.ClassController = _hunterController;
-        _actionInput.SetClassInput(_hunterController.ClassInput);
-        _propController.Deactivate();
-        _hunterController.Activate();
+        _movementController.ClassController = _propController;
+        _actionInput.SetClassInput(_propController.ClassInput);
+        _hunterController.Deactivate();
+        _propController.Activate();
     }
 
     public void OnSwapTeam()
