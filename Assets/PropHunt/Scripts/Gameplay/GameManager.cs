@@ -1,24 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using static UnityEngine.InputSystem.Controls.AxisControl;
 using DepthOfField = UnityEngine.Rendering.Universal.DepthOfField;
 using Random = UnityEngine.Random;
 
 public class GameManager : NetworkBehaviour
 {
-    private NetworkVariable<GameEnum> _gameStatus = new();
-
     public static GameManager Instance;
-    
-    // Liste des points d'apparition préréglés
     public List<Transform> spawnPoints;
-    
     public const float gameDuration = 180f;
-    public PlayerList playerList;
     public float hunterBlurDuration = 10f;
+    public NetworkVariable<FixedString64Bytes> TeamWin = new NetworkVariable<FixedString64Bytes>(Team.NOBODY);
+    public PlayerList playerList = null;
+
+    private NetworkVariable<GameEnum> _gameStatus = new();
     private bool hunterBlurEnabled = false;
     private DateTime startTime;
 
@@ -159,12 +159,13 @@ public class GameManager : NetworkBehaviour
 
 public class PlayerList
 {
-    public int NbHunter = 0;
-    public int NbProp = 0;
-    public string TeamWin = Team.NOBODY;
-    public Dictionary<NetworkClient,int> ScorePlayers = new Dictionary<NetworkClient,int>();
+    private int NbHunter = 0;
+    private int NbProp = 0;
+    private List<ClientInfo> clientInfos;
     public PlayerList()
     {
+        clientInfos = new List<ClientInfo>();
+
         foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
         {
             if (client.PlayerObject.GetComponent<PlayerManager>().isHunter.Value)
@@ -175,7 +176,7 @@ public class PlayerList
             {
                 NbProp++;
             }
-            ScorePlayers.Add(client, 0);
+            clientInfos.Add(new ClientInfo(client.ClientId));
         }
     }
 
@@ -200,12 +201,12 @@ public class PlayerList
     {
         if (NbHunter == 0)
         {
-            TeamWin = Team.PROB;
+            GameManager.Instance.TeamWin.Value = Team.PROB;
             return true;
         }
         else if (NbProp == 0)
         {
-            TeamWin = Team.HUNTER;
+            GameManager.Instance.TeamWin.Value = Team.HUNTER;
             return true;
         }
         else
@@ -220,4 +221,23 @@ public struct Team
     public const string HUNTER = "Hunter";
     public const string PROB = "Prob";
     public const string NOBODY = "";
+}
+
+public class ClientInfo : INetworkSerializable
+{
+    public ulong ClientId;
+    public bool Alive;
+    public int Score;
+    public ClientInfo(ulong ClientId)
+    {
+        this.ClientId = ClientId;
+        this.Alive = true;
+        this.Score = 0;
+    }
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref ClientId);
+        serializer.SerializeValue(ref Alive);
+        serializer.SerializeValue(ref Score);
+    }
 }

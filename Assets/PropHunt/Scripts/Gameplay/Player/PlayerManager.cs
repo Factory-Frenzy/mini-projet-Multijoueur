@@ -32,16 +32,13 @@ public class PlayerManager : NetworkBehaviour
             lock (_lock)
             {
                 _life.Value = _life.Value + value;
-                //print("Life Hunter="+isHunter.Value+": "+_life.Value);
-                /*print(NetworkManager.Singleton.ConnectedClientsIds.Count);
-                print(NetworkManager.Singleton.IsHost);
-                print(NetworkManager.Singleton.IsServer);
-                print(NetworkManager.Singleton.IsClient);*/
                 if (NetworkManager.Singleton.IsServer)
                 {
                     if (_life.Value == 0)
                     {
-                        this.GetComponent<NetworkObject>().Despawn();
+                        var networkObject = this.GetComponent<NetworkObject>();
+                        networkObject.Despawn();
+                        GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId);
                     }
                 }
 
