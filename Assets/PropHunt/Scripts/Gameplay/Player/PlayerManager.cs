@@ -39,7 +39,10 @@ public class PlayerManager : NetworkBehaviour
                     {
                         var networkObject = this.GetComponent<NetworkObject>();
                         networkObject.Despawn();
-                        GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId);
+                        if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
+                        {
+                            print("FIN DU JEU");
+                        }
                     }
                 }
 
