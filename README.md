@@ -36,4 +36,4 @@ FP3:
 - [X] FP2 – 4 : Le score des Hunters augmente lorsqu’ils touchent un Prop.(+100)
 - [X] FP2 – 5 : Le score des joueurs diminue lorsqu’ils perdent des points de vie.(-50)
 - [ ] FP2 – 6 : Un tableau récapitulatif des scores s’affiche à la fin de la partie.
-- [ ] FP2 – 7 : Les props peuvent verrouiller leur position
+- [X] FP2 – 7 : Les props peuvent verrouiller leur position
