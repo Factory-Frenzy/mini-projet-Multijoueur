@@ -33,11 +33,14 @@ public class PlayerManager : NetworkBehaviour
             lock (_lock)
             {
                 _life.Value = _life.Value + value;
+
                 if (NetworkManager.Singleton.IsServer)
                 {
+                    var networkObject = this.GetComponent<NetworkObject>();
+                    GameManager.Instance.playerList.GetClientInfo(networkObject.OwnerClientId).Score -= 50;
+
                     if (_life.Value == 0)
                     {
-                        var networkObject = this.GetComponent<NetworkObject>();
                         networkObject.Despawn();
                         if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
                         {

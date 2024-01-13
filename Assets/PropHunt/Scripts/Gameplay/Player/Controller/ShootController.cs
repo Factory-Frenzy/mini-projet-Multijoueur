@@ -26,6 +26,7 @@ public class ShootController : NetworkBehaviour
             if (playerTouch && !playerTouch.isHunter.Value)
             {
                 playerTouch.Life = -1;
+                GameManager.Instance.playerList.GetClientInfo(ShootInfo.SenderId).Score += 100;
             }
             else
             {

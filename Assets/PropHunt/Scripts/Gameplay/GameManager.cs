@@ -233,6 +233,18 @@ public class PlayerList
             return false;
         }
     }
+
+    public ClientInfo GetClientInfo(ulong clientId)
+    {
+        foreach (var clientInfo in clientInfos)
+        {
+            if (clientInfo.ClientId == clientId)
+            {
+                return clientInfo;
+            }
+        }
+        return null;
+    }
 }
 
 public struct Team
