@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using static UnityEngine.InputSystem.Controls.AxisControl;
 using DepthOfField = UnityEngine.Rendering.Universal.DepthOfField;
 using Random = UnityEngine.Random;
 
@@ -78,7 +76,6 @@ public class GameManager : NetworkBehaviour
         if (_gameStatus.Value == GameEnum.IN_GAME && DateTime.Now > startTime.AddSeconds(gameDuration))
         {
             _gameStatus.Value = GameEnum.FINISH;
-            // todo: display scene finish with scoreboard
             TeamWin.Value = Team.PROB;
             print("Fin du jeu sur time out");
         }
@@ -222,11 +219,13 @@ public class PlayerList
     {
         if (NbHunter == 0)
         {
+            Debug.Log("team win : prob");
             GameManager.Instance.TeamWin.Value = Team.PROB;
             return true;
         }
         else if (NbProp == 0)
         {
+            Debug.Log("team win : hunter");
             GameManager.Instance.TeamWin.Value = Team.HUNTER;
             return true;
         }

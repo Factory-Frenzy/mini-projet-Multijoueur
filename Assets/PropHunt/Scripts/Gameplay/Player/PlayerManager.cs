@@ -33,7 +33,7 @@ public class PlayerManager : NetworkBehaviour
         {
             lock (_lock)
             {
-                _life.Value = _life.Value + value;
+                _life.Value += value;
 
                 if (NetworkManager.Singleton.IsServer)
                 {
@@ -47,7 +47,14 @@ public class PlayerManager : NetworkBehaviour
                         if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
                         {
                             print("FIN DU JEU");
-                            //NetworkManager.Singleton.SceneManager.LoadScene("EndGame",UnityEngine.SceneManagement.LoadSceneMode.Single);
+                            foreach (var sNetworkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
+                            {
+                                if (sNetworkObject.name != "GameManager")
+                                {
+                                    sNetworkObject.Despawn();
+                                }
+                            }
+                            NetworkManager.Singleton.SceneManager.LoadScene("EndGame", LoadSceneMode.Single);
                         }
                     }
                 }
@@ -135,8 +142,7 @@ public class PlayerManager : NetworkBehaviour
         base.OnNetworkDespawn();
         if (IsOwner)
         {
-            print("Delete my player");
-            
+            SceneManager.LoadScene("EndGame");
         }
     }
 }
