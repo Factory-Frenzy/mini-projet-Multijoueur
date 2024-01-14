@@ -2,6 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -41,16 +42,26 @@ public class PlayerManager : NetworkBehaviour
 
                     if (_life.Value == 0)
                     {
+                        GameManager.Instance.playerList.GetClientInfo(networkObject.OwnerClientId).IsAlive = false;
                         networkObject.Despawn();
                         if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
                         {
                             print("FIN DU JEU");
+                            EndGame4AllClientRpc();
+                            GameManager.Instance.EndGame();
+                            //NetworkManager.Singleton.SceneManager.LoadScene("EndGame",UnityEngine.SceneManagement.LoadSceneMode.Single);
                         }
                     }
                 }
 
             }
         }
+    }
+
+    [ClientRpc]
+    private void EndGame4AllClientRpc()
+    {
+        GameManager.Instance.EndGame();
     }
 
     private void Awake()
@@ -125,5 +136,15 @@ public class PlayerManager : NetworkBehaviour
         bool isLocked = !_movementController.cursorLocked;
         Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
         _movementController.cursorLocked = isLocked;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsOwner)
+        {
+            print("Delete my player");
+            GameManager.Instance.EndGame();
+        }
     }
 }

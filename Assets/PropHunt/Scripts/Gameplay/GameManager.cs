@@ -17,6 +17,8 @@ public class GameManager : NetworkBehaviour
     public float hunterBlurDuration = 10f;
     public NetworkVariable<FixedString64Bytes> TeamWin = new NetworkVariable<FixedString64Bytes>(Team.NOBODY);
     public PlayerList playerList = null;
+    public GameObject gameObjectGame {  get; set; }
+    public GameObject gameObjectScore { get; set; }
 
     private NetworkVariable<GameEnum> _gameStatus = new();
     private bool hunterBlurEnabled = false;
@@ -32,6 +34,14 @@ public class GameManager : NetworkBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    public void EndGame()
+    {
+        gameObjectGame = GameObject.Find("Game");
+        gameObjectScore = GameObject.Find("Score");
+        gameObjectGame.SetActive(false);
+        gameObjectScore.SetActive(true);
     }
 
     public GameEnum GetStatus()
@@ -79,6 +89,8 @@ public class GameManager : NetworkBehaviour
         {
             _gameStatus.Value = GameEnum.FINISH;
             // todo: display scene finish with scoreboard
+            TeamWin.Value = Team.PROB;
+            print("Fin du jeu sur time out");
         }
     }
     
