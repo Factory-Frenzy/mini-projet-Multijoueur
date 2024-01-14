@@ -47,8 +47,6 @@ public class PlayerManager : NetworkBehaviour
                         if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
                         {
                             print("FIN DU JEU");
-                            EndGame4AllClientRpc();
-                            GameManager.Instance.EndGame();
                             //NetworkManager.Singleton.SceneManager.LoadScene("EndGame",UnityEngine.SceneManagement.LoadSceneMode.Single);
                         }
                     }
@@ -56,12 +54,6 @@ public class PlayerManager : NetworkBehaviour
 
             }
         }
-    }
-
-    [ClientRpc]
-    private void EndGame4AllClientRpc()
-    {
-        GameManager.Instance.EndGame();
     }
 
     private void Awake()
@@ -144,7 +136,7 @@ public class PlayerManager : NetworkBehaviour
         if (IsOwner)
         {
             print("Delete my player");
-            GameManager.Instance.EndGame();
+            
         }
     }
 }

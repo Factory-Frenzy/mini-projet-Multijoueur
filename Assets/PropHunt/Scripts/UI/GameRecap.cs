@@ -11,19 +11,7 @@ public class GameRecap : MonoBehaviour
     [SerializeField] private TextMeshProUGUI UI_Recap;
     private void Start()
     {
-        if (GameManager.Instance.TeamWin.Value == Team.NOBODY)
-        {
-            GameManager.Instance.TeamWin.OnValueChanged += OnEndGame;
-        }
-        else
-        {
-            DispScore();
-        }
-    }
 
-    private void OnEndGame(FixedString64Bytes previousValue, FixedString64Bytes newValue)
-    {
-        DispScore();
     }
 
     private void DispScore()
