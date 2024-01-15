@@ -54,7 +54,8 @@ public class PlayerManager : NetworkBehaviour
                             print("passage");
                             foreach (var sNetworkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
                             {
-                                if (sNetworkObject.name != "GameManager")
+                                print(sNetworkObject.name);
+                                if (sNetworkObject.name != "GameManager" && sNetworkObject.IsSpawned)
                                 {
                                     sNetworkObject.Despawn();
                                 }
