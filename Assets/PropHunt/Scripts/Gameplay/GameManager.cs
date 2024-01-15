@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ public class GameManager : NetworkBehaviour
     public const float gameDuration = 180f;
     public float hunterBlurDuration = 10f;
     public NetworkVariable<FixedString64Bytes> TeamWin = new NetworkVariable<FixedString64Bytes>(Team.NOBODY);
-    public PlayerList playerList = null;
+    public PlayerList playerList = new PlayerList();
 
     private NetworkVariable<GameEnum> _gameStatus = new();
     private bool hunterBlurEnabled = false;
@@ -54,13 +55,13 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        playerList = new PlayerList();
+        playerList.InitPlayerList();
         StartCoroutine(SpawnPlayersWithDelay());
     }
 
     void Update()
     {
-        if (!IsHost) return;
+        if (!IsServer) return;
         
         if (hunterBlurEnabled)
         {
@@ -172,6 +173,14 @@ public class GameManager : NetworkBehaviour
             StartCoroutine(GivingSurvivalPoints());
         }
     }
+
+    [ClientRpc]
+    public void SendClientsInfosClientRpc(string clientInfos)
+    {
+        print("SendClientsInfosClientRpc");
+        playerList.clientInfos = new List<ClientInfo>();
+        playerList.clientInfos = JsonConvert.DeserializeObject<List<ClientInfo>>(clientInfos);
+    }
 }
 
 public class PlayerList
@@ -180,7 +189,7 @@ public class PlayerList
     private int NbProp = 0;
 
     public List<ClientInfo> clientInfos;
-    public PlayerList()
+    public void InitPlayerList()
     {
         clientInfos = new List<ClientInfo>();
 

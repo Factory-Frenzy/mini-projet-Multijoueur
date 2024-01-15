@@ -1,4 +1,6 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -47,6 +49,9 @@ public class PlayerManager : NetworkBehaviour
                         if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
                         {
                             print("FIN DU JEU");
+                            var clientInfos = JsonConvert.SerializeObject(GameManager.Instance.playerList.clientInfos);
+                            GameManager.Instance.SendClientsInfosClientRpc(clientInfos);
+                            print("passage");
                             foreach (var sNetworkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
                             {
                                 if (sNetworkObject.name != "GameManager")
