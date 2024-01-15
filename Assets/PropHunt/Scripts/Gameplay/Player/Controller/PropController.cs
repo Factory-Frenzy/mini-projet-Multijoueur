@@ -279,10 +279,11 @@ public class PropController : ClassController
     /// </summary>
     /// <param name="tauntNumber"></param>
     [ServerRpc]
-    public void SendTauntServerRpc(int tauntNumber)
+    public void SendTauntServerRpc(int tauntNumber, ServerRpcParams serverRpcParams = default)
     {
         if (_isTauntAvailable)
         {
+            GameManager.Instance.playerList.GetClientInfo(serverRpcParams.Receive.SenderClientId).Score += 200;
             SendTauntClientRpc(tauntNumber);
             _nextTauntAvailableTime = Time.time + _tauntCooldownTime;
             _isTauntAvailable = false;

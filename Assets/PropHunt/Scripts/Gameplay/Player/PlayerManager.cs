@@ -1,22 +1,26 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : NetworkBehaviour
 {
     protected MovementController _movementController;
-    public Camera Camera;
     protected ClassController _currentController;
-    public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    private NetworkVariable<int> _life = new NetworkVariable<int>(10,NetworkVariableReadPermission.Everyone);
-    private readonly object _lock = new object();
 
+    public Camera Camera;
+    [NonSerialized] public NetworkVariable<bool> isHunter = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> _life = new NetworkVariable<int>(10, NetworkVariableReadPermission.Everyone);
     public ActionInput _actionInput;
     public Animator _animator;
-    [SerializeField] PropController _propController;
-    [SerializeField] HunterController _hunterController;
-    
+
+    [SerializeField] private PropController _propController;
+    [SerializeField] private HunterController _hunterController;
+    private readonly object _lock = new object();
+
     public ulong NetworkClientId
     {
         get { return NetworkManager.Singleton.LocalClientId; }
@@ -31,17 +35,33 @@ public class PlayerManager : NetworkBehaviour
         {
             lock (_lock)
             {
-                _life.Value = _life.Value + value;
-                //print("Life Hunter="+isHunter.Value+": "+_life.Value);
-                /*print(NetworkManager.Singleton.ConnectedClientsIds.Count);
-                print(NetworkManager.Singleton.IsHost);
-                print(NetworkManager.Singleton.IsServer);
-                print(NetworkManager.Singleton.IsClient);*/
+                _life.Value += value;
+
                 if (NetworkManager.Singleton.IsServer)
                 {
+                    var networkObject = this.GetComponent<NetworkObject>();
+                    GameManager.Instance.playerList.GetClientInfo(networkObject.OwnerClientId).Score -= 50;
+
                     if (_life.Value == 0)
                     {
-                        this.GetComponent<NetworkObject>().Despawn();
+                        GameManager.Instance.playerList.GetClientInfo(networkObject.OwnerClientId).IsAlive = false;
+                        networkObject.Despawn();
+                        if (GameManager.Instance.playerList.OneMoreDeath(networkObject.OwnerClientId))
+                        {
+                            print("FIN DU JEU");
+                            var clientInfos = JsonConvert.SerializeObject(GameManager.Instance.playerList.clientInfos);
+                            GameManager.Instance.SendClientsInfosClientRpc(clientInfos);
+                            print("passage");
+                            foreach (var sNetworkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
+                            {
+                                print(sNetworkObject.name);
+                                if (sNetworkObject.name != "GameManager" && sNetworkObject.IsSpawned)
+                                {
+                                    sNetworkObject.Despawn();
+                                }
+                            }
+                            NetworkManager.Singleton.SceneManager.LoadScene("EndGame", LoadSceneMode.Single);
+                        }
                     }
                 }
 
@@ -51,30 +71,32 @@ public class PlayerManager : NetworkBehaviour
 
     private void Awake()
     {
+        print("isHunter0: " + isHunter.Value);
         _movementController = GetComponent<MovementController>();
         if (_propController == null)
         {
             _propController = GetComponentInChildren<PropController>();
         }
-        if(_hunterController == null)
+        if (_hunterController == null)
         {
             _hunterController = GetComponentInChildren<HunterController>();
             print(_hunterController);
         }
-        if(_actionInput == null)
+        if (_actionInput == null)
         {
             _actionInput = GetComponent<ActionInput>();
         }
         if (Camera == null) Camera = GetComponentInChildren<Camera>(true);
+        print("isHunter1: " + isHunter.Value);
     }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        _hunterController.Deactivate();
+        SwapTeam();
+        print("isHunter2: " + isHunter.Value);
         isHunter.OnValueChanged += (@previousValue, @newValue) => SwapTeam();
         if (IsOwner)
         {
-            isHunter.Value = !isHunter.Value;
             GetComponent<PlayerInput>().enabled = true;
             GetComponent<AudioListener>().enabled = true;
             _movementController.enabled = true;
@@ -111,12 +133,22 @@ public class PlayerManager : NetworkBehaviour
     public void OnSwapTeam()
     {
         isHunter.Value = !isHunter.Value;
+        print("coucou");
     }
 
     public void ToggleCursorLock()
     {
         bool isLocked = !_movementController.cursorLocked;
-        Cursor.lockState = isLocked? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
         _movementController.cursorLocked = isLocked;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsOwner)
+        {
+            SceneManager.LoadScene("EndGame");
+        }
     }
 }
