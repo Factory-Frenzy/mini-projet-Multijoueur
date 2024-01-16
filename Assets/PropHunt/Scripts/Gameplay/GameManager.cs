@@ -177,7 +177,6 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void SendClientsInfosClientRpc(string clientInfos)
     {
-        print("SendClientsInfosClientRpc");
         playerList.clientInfos = new List<ClientInfo>();
         playerList.clientInfos = JsonConvert.DeserializeObject<List<ClientInfo>>(clientInfos);
     }

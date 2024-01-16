@@ -51,7 +51,6 @@ public class PlayerManager : NetworkBehaviour
                             print("FIN DU JEU");
                             var clientInfos = JsonConvert.SerializeObject(GameManager.Instance.playerList.clientInfos);
                             GameManager.Instance.SendClientsInfosClientRpc(clientInfos);
-                            print("passage");
                             foreach (var sNetworkObject in NetworkManager.Singleton.SpawnManager.SpawnedObjectsList)
                             {
                                 print(sNetworkObject.name);
@@ -71,7 +70,6 @@ public class PlayerManager : NetworkBehaviour
 
     private void Awake()
     {
-        print("isHunter0: " + isHunter.Value);
         _movementController = GetComponent<MovementController>();
         if (_propController == null)
         {
@@ -87,13 +85,11 @@ public class PlayerManager : NetworkBehaviour
             _actionInput = GetComponent<ActionInput>();
         }
         if (Camera == null) Camera = GetComponentInChildren<Camera>(true);
-        print("isHunter1: " + isHunter.Value);
     }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         SwapTeam();
-        print("isHunter2: " + isHunter.Value);
         isHunter.OnValueChanged += (@previousValue, @newValue) => SwapTeam();
         if (IsOwner)
         {
@@ -133,7 +129,6 @@ public class PlayerManager : NetworkBehaviour
     public void OnSwapTeam()
     {
         isHunter.Value = !isHunter.Value;
-        print("coucou");
     }
 
     public void ToggleCursorLock()

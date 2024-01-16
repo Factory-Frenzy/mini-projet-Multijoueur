@@ -9,7 +9,6 @@ public class GameRecap : MonoBehaviour
     
     private void Start()
     {
-        print("STARTTTTTTTTTTTTTTT: " + GameManager.Instance.TeamWin.Value);
         if (GameManager.Instance.TeamWin.Value == Team.NOBODY)
         {
             GameManager.Instance.TeamWin.OnValueChanged += OnTeamWin;
@@ -27,11 +26,7 @@ public class GameRecap : MonoBehaviour
     
     private void DispScore()
     {
-        print("DispScore");
         var winner = GameManager.Instance.TeamWin.Value;
-        print("GameManager.Instance: " + GameManager.Instance);
-        print("GameManager.Instance.playerList: " + GameManager.Instance.playerList);
-        print("counnt: " + GameManager.Instance.playerList.clientInfos.Count);
         var playerInfo = GameManager.Instance.playerList.GetClientInfo(NetworkManager.Singleton.LocalClientId);
         var score = playerInfo.Score;
         var isAlive = playerInfo.IsAlive;
